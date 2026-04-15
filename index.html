@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Projects — AmzBees</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#09090b; --border:#1f1f23; --accent:#ff6b2b; --accent2:#c94d0f;
+  --text:#d4d0c8; --muted:#9e9a8e; --dim:#c8c4b8;
+  --serif:'Cormorant Garamond',Georgia,serif; --mono:'Syne Mono','Courier New',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.7;min-height:100vh}
+body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+.header{max-width:1100px;margin:0 auto;padding:72px 48px 56px;position:relative;animation:reveal 1s ease both}
+.header-eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:36px}
+.pill{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;border:1px solid var(--accent2);color:var(--accent);padding:5px 12px}
+.title-block{position:relative}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(64px,10vw,140px);line-height:0.88;letter-spacing:-0.03em}
+h1 .italic{font-style:italic;color:var(--accent)}
+.watermark{position:absolute;right:0;top:-20px;font-family:var(--serif);font-size:clamp(100px,18vw,220px);color:#101012;line-height:1;pointer-events:none;user-select:none;letter-spacing:-0.04em;font-weight:600}
+.header-meta{margin-top:40px;display:flex;gap:40px;align-items:center}
+.meta-item{font-size:10px;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase}
+.meta-item strong{color:var(--text);font-weight:400}
+.header-line{position:absolute;bottom:0;left:48px;right:48px;height:1px;background:linear-gradient(90deg,var(--accent2) 0%,var(--border) 60%,transparent 100%)}
+.main{max-width:1100px;margin:0 auto;padding:0 48px 120px}
+.project{border-bottom:1px solid var(--border);position:relative;animation:slideUp 0.5s ease both}
+.project:nth-child(1){animation-delay:.05s}.project:nth-child(2){animation-delay:.10s}.project:nth-child(3){animation-delay:.15s}.project:nth-child(4){animation-delay:.20s}.project:nth-child(5){animation-delay:.25s}.project:nth-child(6){animation-delay:.30s}.project:nth-child(7){animation-delay:.35s}.project:nth-child(8){animation-delay:.40s}.project:nth-child(9){animation-delay:.45s}.project:nth-child(10){animation-delay:.50s}
+.project::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent);transform:scaleY(0);transform-origin:top;transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.project.open::before{transform:scaleY(1)}
+.trigger{display:grid;grid-template-columns:80px 1fr auto;align-items:center;gap:32px;padding:32px 0 32px 24px;cursor:pointer;user-select:none;transition:background .15s}
+.trigger:hover{background:rgba(255,107,43,.02)}
+.num{font-family:var(--serif);font-size:42px;font-weight:300;font-style:italic;color:var(--border);line-height:1;transition:color .3s;letter-spacing:-.02em}
+.project.open .num,.trigger:hover .num{color:var(--accent2)}
+.trigger-right{display:flex;flex-direction:column;gap:6px}
+.project-title{font-family:var(--serif);font-size:clamp(20px,2.8vw,30px);font-weight:300;letter-spacing:-.01em;line-height:1.15;transition:color .2s}
+.project.open .project-title{color:var(--accent)}
+.project-sub{font-size:10px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;display:none}
+.project.open .project-sub{display:block}
+.btn{width:36px;height:36px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:20px;line-height:1;flex-shrink:0;transition:border-color .25s,color .25s,transform .35s cubic-bezier(.4,0,.2,1),background .25s}
+.project.open .btn{transform:rotate(45deg);border-color:var(--accent);color:var(--accent);background:rgba(255,107,43,.05)}
+.body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.4,0,.2,1)}
+.project.open .body{grid-template-rows:1fr}
+.body-inner{overflow:hidden}
+.content{padding:8px 0 48px 136px}
+.section{margin-bottom:28px}
+.section:last-child{margin-bottom:0}
+.section h3{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+.section p{color:var(--dim);margin-bottom:8px;font-size:13px}
+.section ul{list-style:none}
+.section ul li{padding:3px 0 3px 18px;position:relative;color:var(--dim);font-size:12.5px;line-height:1.65}
+.section ul li::before{content:'›';position:absolute;left:0;color:var(--accent2);font-size:14px;line-height:1.5}
+.section ol{padding-left:0;list-style:none;counter-reset:ol}
+.section ol li{padding:4px 0 4px 28px;position:relative;color:var(--dim);font-size:12.5px;line-height:1.65;counter-increment:ol}
+.section ol li::before{content:counter(ol)'.';position:absolute;left:0;color:var(--accent2);font-size:11px;font-weight:600;line-height:1.8}
+.note{border-left:2px solid var(--accent2);padding:10px 16px;font-size:11px;color:var(--accent2);background:rgba(255,107,43,.03);letter-spacing:.05em;margin-bottom:24px}
+footer{max-width:1100px;margin:0 auto;padding:32px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+footer .accent{color:var(--accent2)}
+@keyframes reveal{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:680px){.header,.main{padding-left:20px;padding-right:20px}.header-line{left:20px;right:20px}.content{padding-left:20px}.trigger{padding-left:12px;grid-template-columns:52px 1fr auto;gap:12px}.num{font-size:28px}footer{flex-direction:column;gap:8px;padding:24px 20px}.header-meta{flex-direction:column;gap:8px}.watermark{display:none}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-eyebrow">
+    <span class="pill">AmzBees Internal</span>
+  </div>
+  <div class="title-block">
+    <h1>AI<br><span class="italic">Projects</span></h1>
+    <span class="watermark">AI</span>
+  </div>
+  <div class="header-meta">
+    <div class="meta-item"><strong>10</strong> active projects</div>
+    <div class="meta-item">AI development &amp; automation</div>
+  </div>
+  <div class="header-line"></div>
+</header>
+
+<main class="main">
+
+  <div class="project">
+    <div class="trigger" onclick="toggle(this.parentElement)">
+      <span class="num">01</span>
+      <div class="trigger-right">
+        <span class="project-title">Data Infrastructure &amp; Synchronisation</span>
+        <span class="project-sub">Infrastructure</span>
+      </div>
+      <span class="btn">+</span>
+    </div>
+    <div class="body"><div class="body-inner"><div class="content">
+      <p style="color:var(--dim);margin-bottom:20px">Decide and document where data lives across all projects and how it works for the team.</p>
+      <div class="section">
+        <h3>Three Storage Levels</h3>
+        <ol>
+          <li>Cloud (e.g. Google Drive): accessible from anywhere, automatic sync, suitable for shared files</li>
+          <li>Office server / shared drive: physical hard drive connected to the server, configured as a virtual drive, accessible to all office members over the network</li>
+          <li>Local machine: each team member holds their own portion locally</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h3>Questions to Resolve</h3>
+        <ul>
+          <li>What lives where: which data goes to cloud, which to server, which stays local</li>
+          <li>How much data needs to be in the cloud vs on local machines</li>
+          <li>How Claude accesses data from each level: via cloud, local folders, or both</li>
+          <li>If multiple members work on the same file, shared access is needed: Google Drive, server, or both</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Sync Hygiene</h3>
+        <ul>
+          <li>Define sync rules per project</li>
+          <li>When and how files are synced between all three levels</li>
+          <li>How to avoid conflicts and data loss</li>
+        </ul>
+      </div>
+      <a href="data-infrastructure.html" style="display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-decoration:none;margin-top:12px;padding:8px 16px;border:1px solid var(--accent2);transition:background .2s,color .2s" onmouseover="this.style.background='rgba(255,107,43,.08)'" onmouseout="this.style.background='transparent'">Full project document →</a>
+    </div></div></div>
+  </div>
+
+  <div class="project">
+    <div class="trigger" onclick="toggle(this.parentElement)">
+      <span class="num">02</span>
+      <div class="trigger-right">
+        <span class="project-title">24/7 Agent Infrastructure</span>
+        <span class="project-sub">Infrastructure</span>
+      </div>
+      <span class="btn">+</span>
+    </div>
+    <div class="body"><div class="body-inner"><div class="content">
+      <p style="color:var(--dim);margin-bottom:20px">The agency needs a solution for running agents and automated tasks around the clock without relying on a local machine being always on.</p>
+      <div class="section">
+        <h3>What Needs to Run Continuously</h3>
+        <ul>
+          <li>Recurring agent tasks</li>
+          <li>Database operations and syncing</li>
+          <li>Knowledge base maintenance and updates</li>
+          <li>Scheduled jobs of all kinds</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Starting Point</h3>
+        <ul>
+          <li>A dedicated always-on office machine is an acceptable starting point</li>
+          <li>As the number of agents grows and more agency processes depend on AI, reliance on a single machine becomes a critical vulnerability</li>
+          <li>At some point this must migrate to cloud servers or a serious dedicated server machine</li>
+          <li>This transition needs to be planned in advance, not reactive</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Core Questions to Answer</h3>
+        <ul>
+          <li>What kinds of recurring tasks exist across all projects, and what are their requirements (frequency, compute, data access)</li>
+          <li>What cloud server options exist and what fits the agency's scale and budget</li>
+          <li>Who manages and maintains the infrastructure, and what level of technical overhead is acceptable</li>
+          <li>How do agents access local data and tools from a remote server</li>
+          <li>How does this connect to the data infrastructure project (#1): cloud, office server, and local machines</li>
+          <li>What is the cost model: VPS, managed cloud (AWS/GCP/Azure), or something else</li>
+          <li>Security: who has access, how are credentials managed</li>
+          <li>Reliability and uptime requirements</li>
+          <li>Monitoring: how do we know when something breaks or fails silently</li>
+        </ul>
+      </div>
+      <p style="color:var(--muted);font-size:12px;font-style:italic">This project needs to map all recurring tasks across all other projects first, then design the infrastructure around actual needs rather than assumptions.</p>
+    </div></div></div>
+  </div>
+
+  <div class="project">
+    <div class="trigger" onclick="toggle(this.parentElement)">
+      <span class="num">03</span>
+      <div class="trigger-right">
+        <span class="project-title">Amazon Knowledge Base</span>
+        <span class="project-sub">Knowledge Management</span>
+      </div>
+      <span class="btn">+</span>
+    </div>
+    <div class="body"><div class="body-inner"><div class="content">
+      <p style="color:var(--dim);margin-bottom:20px">A structured knowledge base covering all Amazon-related information. Platform needs to be decided: Obsidian, custom solution, Claude-assisted, or replicating Obsidian. Currently leaning toward an Obsidian-style format.</p>
+      <div class="section">
+        <h3>Content — Official Amazon Sources</h3>
+        <ul>
+          <li>All Amazon help pages</li>
+          <li>Amazon forums</li>
+          <li>All Amazon technical issues and their resolutions</li>
+          <li>Everything that comes officially from Amazon</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Content — Unofficial Sources</h3>
+        <ul>
+          <li>Podcasts</li>
+          <li>YouTube videos with substantive content</li>
+          <li>Instagram and LinkedIn posts with real value</li>
+          <li>Other news sources</li>
+          <li>Courses and teachings</li>
+          <li>Summits</li>
+          <li>Anything that has genuine value</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Organisation &amp; Maintenance</h3>
+        <ul>
+          <li>Tags: official vs unofficial information, clearly separated</li>
+          <li>Check file integrity</li>
+          <li>Check whether information is still current</li>
+          <li>Track changes</li>
+          <li>Monitor news and forums</li>
+          <li>Track trends</li>
+          <li>Breaking news</li>
+          <li>Contradictions: actively look for cases where two facts conflict. Keep them linked together with both versions preserved</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Cross-Project Connections</h3>
+        <ul>
+          <li>Connect to every project in the future, especially decision-making</li>
+          <li>Individual brand knowledge base connects to this one for case resolution</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Team Access</h3>
+        <ul>
+          <li>Agents that need the knowledge base must have access</li>
+          <li>A smart agent for team members: not direct file browsing, but an agent that works with the full structure and answers questions</li>
+        </ul>
+      </div>
+    </div></div></div>
+  </div>
+
+  <div class="project">
+    <div class="trigger" onclick="toggle(this.parentElement)">
+      <span class="num">04</span>
+      <div class="trigger-right">
+        <span class="project-title">Individual Brand Knowledge Bases</span>
+        <span class="project-sub">Knowledge Management</span>
+      </div>
+      <span class="btn">+</span>
+    </div>
+    <div class="body"><div class="body-inner"><div class="content">
+      <p style="color:var(--dim);margin-bottom:20px">A separate knowledge base for each brand we work with. Shared structure across all brands, but content is individual.</p>
+      <div class="section">
+        <h3>Historical Data</h3>
+        <ul>
+          <li>Weekly, monthly, and longer-term snapshots</li>
+          <li>Data stored with timestamps to track history and changes</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Live Data</h3>
+        <ul>
+          <li>Connected to Amazon API</li>
+          <li>Data pulled and stored automatically on an ongoing basis</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Structure</h3>
+        <ul>
+          <li>Proper structured database with indexes</li>
+          <li>Information easy to find and access</li>
+          <li>Direct file browsing available when needed</li>
+          <li>Defined file ingestion process: clear workflow for how new files enter the base</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Access</h3>
+        <ul>
+          <li>Via agent or directly through files, depending on need</li>
+          <li>Every team member can access</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Implementation</h3>
+        <ul>
+          <li>Start with one brand: find the workflow, test, refine</li>
+          <li>Then roll the same workflow out to remaining brands</li>
+        </ul>
+      </div>
+    </div></div></div>
+  </div>
+
+  <div class="project">
+    <div class="trigger" onclick="toggle(this.parentElement)">
+      <span class="num">05</span>
+      <div class="trigger-right">
+        <span class="project-title">Advertising Automation</span>
+        <span class="project-sub">Automation</span>
+      </div>
+      <span class="btn">+</span>
+    </div>
+    <div class="body"><div class="body-inner"><div class="content">
+      <div class="note">This project may split into several sub-projects.</div>
+      <div class="section">
+        <h3>Step 1 — Amazon Advertising MCP Exploration</h3>
+        <ul>
+          <li>Identify what is possible via Amazon Advertising MCP</li>
+          <li>What is visible from the console, what tools are available</li>
+          <li>What can be automated via MCP</li>
+          <li>Document the structure of what we have</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Step 2 — Advertising Team Needs</h3>
+        <ul>
+          <li>Understand what they expect</li>
+          <li>Find quick wins / low hanging fruit: what delivers value fastest</li>
+          <li>Prioritise by speed and impact</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Three Automation Directions</h3>
+        <ol>
+          <li>Local acceleration (without MCP): work with data from downloaded reports, as we do now, but automated and faster. Report analysis. Evaluate the option of working with bulk files.</li>
+          <li>Direct changes via MCP: bypass the report cycle, make changes directly via MCP rather than through the report workflow.</li>
+          <li>Templates via MCP: work directly through MCP building reusable templates.</li>
+        </ol>
+      </div>
+    </div></div></div>
+  </div>
+
+  <div class="project">
+    <div class="trigger" onclick="toggle(this.parentElement)">
+      <span class="num">06</span>
+      <div class="trigger-right">
+        <span class="project-title">Amazon Seller Support Automation</span>
+        <span class="project-sub">Automation</span>
+      </div>
+      <span class="btn">+</span>
+    </div>
+    <div class="body"><div class="body-inner"><div class="content">
+      <p style="color:var(--dim);margin-bottom:20px">Problem: a single support case takes ~2 hours, most of it wasted time.</p>
+      <div class="section">
+        <h3>Intake</h3>
+        <ul>
+          <li>Three fields: Facts / Problem / Target</li>
+          <li>If a precedent exists: the person takes an existing snippet, edits it if needed, and uses it</li>
+          <li>If not: fills out the full intake from scratch</li>
+          <li>Over time the snippet library grows and intake gets faster</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Agent 1 — Operator (Claude in Chrome)</h3>
+        <ul>
+          <li>Runs the actual support chat</li>
+          <li>Follows playbooks</li>
+          <li>If stuck, escalates to a human via Slack</li>
+          <li>Never self-modifies, only reads updated instructions</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Agent 2 — Analyst (Claude Code)</h3>
+        <ul>
+          <li>Works after the conversation ends</li>
+          <li>Analyses transcripts</li>
+          <li>Classifies cases, extracts patterns</li>
+          <li>Proposes playbook updates, human approves</li>
+          <li>Grows the knowledge base, compiles new cases</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Slack</h3>
+        <ul>
+          <li>Escalation channel</li>
+          <li>Audit log</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Knowledge Base</h3>
+        <ul>
+          <li>Project's own knowledge base</li>
+          <li>Can be connected to the Amazon Knowledge Base</li>
+          <li>Playbooks, raw transcripts, processed case logs, snippets, learnings</li>
+          <li>Central case index with controlled taxonomy for searchability</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Operations &amp; Tech Stack</h3>
+        <ul>
+          <li>Claude in Chrome so actions appear human and are not blocked by Amazon</li>
+          <li>No custom code required</li>
+          <li>Built on: Claude in Chrome, Claude Code, Projects, Slack MCP</li>
+        </ul>
+      </div>
+    </div></div></div>
+  </div>
+
+  <div class="project">
+    <div class="trigger" onclick="toggle(this.parentElement)">
+      <span class="num">07</span>
+      <div class="trigger-right">
+        <span class="project-title">AI Knowledge Base</span>
+        <span class="project-sub">Knowledge Management</span>
+      </div>
+      <span class="btn">+</span>
+    </div>
+    <div class="body"><div class="body-inner"><div class="content">
+      <p style="color:var(--dim);margin-bottom:20px">A separate project, analogous to the Amazon Knowledge Base, but focused on the AI world. Goal: track all AI news and developments, catalogue, organise, and evaluate what has value at the agency level.</p>
+      <div class="section">
+        <h3>Content</h3>
+        <ul>
+          <li>All AI news and developments</li>
+          <li>New tools, demos, releases</li>
+          <li>Trend tracking</li>
+          <li>Reverse engineering: analyse tools, especially promising ones, understand how they work, assess whether they can be replicated</li>
+          <li>Adaptation: if something fits, apply it to agency needs</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Source Management</h3>
+        <ul>
+          <li>A curated list of reliable, attention-worthy sources</li>
+          <li>List is continuously maintained, reviewed, and updated</li>
+          <li>Separate noise from real value</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Evaluation</h3>
+        <ul>
+          <li>What is relevant to the agency and what is not</li>
+          <li>Practical applicability</li>
+          <li>Trends worth paying attention to</li>
+        </ul>
+      </div>
+    </div></div></div>
+  </div>
+
+  <div class="project">
+    <div class="trigger" onclick="toggle(this.parentElement)">
+      <span class="num">08</span>
+      <div class="trigger-right">
+        <span class="project-title">Call Recordings &amp; Transcriptions</span>
+        <span class="project-sub">Infrastructure</span>
+      </div>
+      <span class="btn">+</span>
+    </div>
+    <div class="body"><div class="body-inner"><div class="content">
+      <div class="section">
+        <h3>Problem &amp; Solution</h3>
+        <p>The transcription tools currently used by the team are low quality and inaccurate.</p>
+        <p>Solution: have raw audio or video files and process them with more capable tools. A raw file preserves full context better than cheap automated solutions.</p>
+      </div>
+      <div class="section">
+        <h3>Goal</h3>
+        <p>Every team member can easily record a call and place the file in a shared location. From those files a library is built: client calls and all other important conversations.</p>
+        <p>Usage: raw files are used in knowledge bases, transcriptions, and analysis.</p>
+      </div>
+      <div class="section">
+        <h3>To Be Determined</h3>
+        <ul>
+          <li>Whether audio alone is sufficient or video is needed</li>
+          <li>How much storage space files require</li>
+          <li>What the simplest workflow looks like for each team member</li>
+        </ul>
+      </div>
+    </div></div></div>
+  </div>
+
+  <div class="project">
+    <div class="trigger" onclick="toggle(this.parentElement)">
+      <span class="num">09</span>
+      <div class="trigger-right">
+        <span class="project-title">AMZBase Video Creator — Looping Video</span>
+        <span class="project-sub">Tools &amp; Testing</span>
+      </div>
+      <span class="btn">+</span>
+    </div>
+    <div class="body"><div class="body-inner"><div class="content">
+      <div class="section">
+        <h3>Task</h3>
+        <p>Need to test Seedance, accessible via the KIE API. Test how a looping video is made starting from a single image, used twice.</p>
+      </div>
+    </div></div></div>
+  </div>
+
+  <div class="project">
+    <div class="trigger" onclick="toggle(this.parentElement)">
+      <span class="num">10</span>
+      <div class="trigger-right">
+        <span class="project-title">OSS Lab — Tech Case Email Subscription</span>
+        <span class="project-sub">Knowledge Management</span>
+      </div>
+      <span class="btn">+</span>
+    </div>
+    <div class="body"><div class="body-inner"><div class="content">
+      <div class="note">Managed in parallel with the Amazon Knowledge Base (#3).</div>
+      <div class="section">
+        <h3>Task</h3>
+        <p>Vanessa Hung sends emails with Amazon technical cases. Currently we only have the free tier. Need to subscribe to the full plan to access all cases. Full cases to be fed into Claude, processed, and information extracted.</p>
+      </div>
+    </div></div></div>
+  </div>
+
+</main>
+
+<footer>
+  <span>AI Projects — AmzBees</span>
+  <span class="accent">Internal</span>
+</footer>
+
+<script>
+function toggle(project) {
+  const isOpen = project.classList.contains('open');
+  document.querySelectorAll('.project.open').forEach(p => p.classList.remove('open'));
+  if (!isOpen) project.classList.add('open');
+}
+</script>
+</body>
+</html>
