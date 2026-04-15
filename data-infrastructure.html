@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Infrastructure & Synchronisation — AmzBees</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#09090b; --border:#1f1f23; --accent:#ff6b2b; --accent2:#c94d0f;
+  --text:#d4d0c8; --muted:#9e9a8e; --dim:#c8c4b8;
+  --serif:'Cormorant Garamond',Georgia,serif; --mono:'Syne Mono','Courier New',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.85;min-height:100vh}
+body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+.header{max-width:860px;margin:0 auto;padding:64px 48px 48px;border-bottom:1px solid var(--border);animation:reveal .8s ease both}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-decoration:none;margin-bottom:32px;transition:color .2s}
+.back:hover{color:var(--accent)}
+.back::before{content:'←';font-size:14px}
+.pill{font-size:9px;letter-spacing:.3em;text-transform:uppercase;border:1px solid var(--accent2);color:var(--accent);padding:4px 10px;display:inline-block;margin-bottom:20px}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(36px,6vw,72px);line-height:1;letter-spacing:-.02em;margin-bottom:8px}
+h1 em{font-style:italic;color:var(--accent)}
+.doc{max-width:860px;margin:0 auto;padding:56px 48px 120px}
+.section{margin-bottom:52px}
+.section h2{font-family:var(--serif);font-size:clamp(22px,3vw,32px);font-weight:300;letter-spacing:-.01em;color:var(--text);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.section h3{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin:28px 0 10px;padding-bottom:7px;border-bottom:1px solid #1a1a1e}
+.section p{color:var(--dim);margin-bottom:12px;font-size:13px}
+.section ul,.section ol{list-style:none;margin-bottom:12px}
+.section ul li,.section ol li{padding:4px 0 4px 20px;position:relative;color:var(--dim);font-size:12.5px;line-height:1.7}
+.section ul li::before{content:'›';position:absolute;left:0;color:var(--accent2);font-size:14px;line-height:1.5}
+.section ol{counter-reset:ol}
+.section ol li{counter-increment:ol;padding-left:28px}
+.section ol li::before{content:counter(ol)'.';position:absolute;left:0;color:var(--accent2);font-size:11px;font-weight:600;line-height:1.9}
+.section strong{color:var(--text);font-weight:400}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:12px}
+th{text-align:left;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);padding:10px 16px;border-bottom:1px solid var(--border);font-weight:400}
+td{padding:12px 16px;border-bottom:1px solid #1a1a1e;color:var(--dim);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td:first-child{color:var(--text);white-space:nowrap}
+.note{border-left:2px solid var(--accent2);padding:12px 18px;font-size:12px;color:var(--accent2);background:rgba(255,107,43,.03);margin:20px 0}
+footer{max-width:860px;margin:0 auto;padding:28px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+footer .accent{color:var(--accent2)}
+@keyframes reveal{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.header,.doc{padding-left:20px;padding-right:20px}footer{padding:20px;flex-direction:column;gap:8px}table{display:block;overflow-x:auto}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="back" href="index.html">AI Projects</a>
+  <div class="pill">Infrastructure</div>
+  <h1>Data Infrastructure<br><em>&amp; Synchronisation</em></h1>
+</header>
+
+<div class="doc">
+
+  <div class="section">
+    <h2>Problem Statement</h2>
+    <p>Building a shared agency-wide knowledge base and file infrastructure. The system must work for the full team — office and remote — from day one, not just a few accounts. Initial deployment starts with 3 Claude accounts and 3 machines, but the architecture is designed for the full agency from the start.</p>
+    <h3>Requirements</h3>
+    <ul>
+      <li>Accessible from any machine, anywhere — office, remote, any country</li>
+      <li>Works via Claude web app (claude.ai) — the primary interface across the team</li>
+      <li>Works via Claude Desktop on machines where it is installed</li>
+      <li>Works on phone and any browser</li>
+      <li>Full team access: currently 20+ users on Claude Team plan, scaling to 100+ users</li>
+      <li>Half the team works remotely — remote access is not optional, it is the baseline</li>
+    </ul>
+    <div class="note">Local filesystem MCP was ruled out — it is machine-specific and incompatible with the web app.</div>
+  </div>
+
+  <div class="section">
+    <h2>Confirmed Architecture</h2>
+    <h3>Layer 1 — Storage: Google Drive (dedicated Workspace user)</h3>
+    <ul>
+      <li>A dedicated user created within the agency's existing Google Workspace — e.g. <strong>ai@youragency.com</strong></li>
+      <li>No new Workspace subscription needed — one additional user seat on the existing plan</li>
+      <li>Sits inside the agency Workspace, inheriting enterprise-grade API quotas, Shared Drive capabilities, admin controls, and Google's uptime SLA</li>
+      <li>Scales to 100+ users without hitting rate limits that would affect a personal Google account</li>
+      <li>Native folder-level permission control — ready for role-based access management at any scale</li>
+      <li>Google Drive for Desktop installed on working machines mounts the Drive as a local folder (e.g. G:\My Drive\). Claude Desktop's filesystem MCP then treats it like any local directory — full read/write, no difference from a local drive.</li>
+      <li>Offline edits sync when connection is restored. Simultaneous edits on two machines produce conflict copies (standard behavior, same as Dropbox).</li>
+    </ul>
+    <h3>What Lives Here</h3>
+    <ul>
+      <li>CLAUDE.md context files</li>
+      <li>Client project files</li>
+      <li>Zervox / COSMO research</li>
+      <li>Databases, datasets</li>
+      <li>Everything the team needs</li>
+    </ul>
+    <h3>Layer 2 — Remote MCP Server: Railway</h3>
+    <ul>
+      <li>A small hosted service wrapping the Google Drive API with full read/write</li>
+      <li>Exposes a URL that all Claude accounts connect to via MCP settings</li>
+      <li>Already familiar with Railway — no new platform to learn</li>
+      <li>Managed platform: Railway handles uptime, no server admin required</li>
+      <li>Estimated cost: ~$5–15/mo depending on usage</li>
+      <li>Scales to 100+ users: same server URL, access control per user at server level</li>
+      <li>Must be built production-quality from the start — connection pooling, caching, rate limit handling</li>
+    </ul>
+    <h3>What This Enables</h3>
+    <ul>
+      <li><strong>One shared knowledge base for the entire agency</strong> — the core value. Currently not possible with any existing setup.</li>
+      <li>Office staff and remote workers access the same database equally — no distinction between being in the office or working from anywhere in the world.</li>
+      <li>Access via any path: Claude web app, Claude Desktop + Drive for Desktop local mount, phone, any browser anywhere.</li>
+      <li>Claude web app gets full read/write to Drive — not just read-only.</li>
+      <li>Any Claude account connected to the server gets access instantly — no per-machine setup beyond a browser.</li>
+      <li>Future: per-user and per-team folder access restrictions enforced at MCP server level.</li>
+    </ul>
+    <h3>Layer 3 — Client-Facing Reports: Vercel or Netlify (free tier)</h3>
+    <ul>
+      <li>Weekly reports and analysis published as HTML files</li>
+      <li>Public URLs with unguessable link hashes (industry-standard approach — same as Google Docs link sharing, Loom, Notion public pages)</li>
+      <li>No client accounts needed — they just open a link</li>
+      <li>No cost (free tier sufficient)</li>
+      <li>Access model: link = access. If confidentiality is critical, an additional layer can be added later, but for weekly analysis this is sufficient</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>What Was Ruled Out</h2>
+    <table>
+      <tr><th>Option</th><th>Why Rejected</th></tr>
+      <tr><td>Local filesystem MCP</td><td>Machine-specific, incompatible with web app</td></tr>
+      <tr><td>Google Drive connector (claude.ai built-in)</td><td>Read-only, not writable</td></tr>
+      <tr><td>Netlify/Vercel with password protection</td><td>Blunt (one password for everything), or requires paid plan</td></tr>
+      <tr><td>Self-managed VPS</td><td>Managed platforms preferred for 24/7 reliability</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Access Control Model</h2>
+    <h3>Current — Starting Point (3 accounts)</h3>
+    <ul>
+      <li>3 Claude accounts connect to same Railway MCP URL</li>
+      <li>Google Drive folder structure determines what's accessible</li>
+      <li>No per-user restriction yet — full shared access among initial users</li>
+    </ul>
+    <h3>Near-Term — Full Agency</h3>
+    <ul>
+      <li>All team members connect via their Claude accounts to the same MCP URL</li>
+      <li>No machine setup required — browser is enough for remote staff</li>
+      <li>Google Drive folder permissions control who sees what at the folder level</li>
+    </ul>
+    <h3>Future — 100+ Users, Role-Based Access</h3>
+    <ul>
+      <li>MCP server enforces per-user and per-role folder access</li>
+      <li>Simple users see only what they need — client files, their own projects</li>
+      <li>Senior staff and admins see everything</li>
+      <li>Architecture already supports this — no rebuild needed</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Open Questions / Next Steps</h2>
+    <p>The following needs to be built (not yet started):</p>
+    <ol>
+      <li>Create <strong>ai@youragency.com</strong> (or equivalent) as a dedicated Workspace user for storage</li>
+      <li>Set up Google Drive folder structure under that account</li>
+      <li>Enable Google Drive API and create OAuth credentials for that user</li>
+      <li>Build and deploy MCP server on Railway with Drive read/write — built for scale (connection pooling, caching, rate limit handling)</li>
+      <li>Connect initial 3 Claude accounts to the Railway MCP URL via settings</li>
+      <li>Set up Vercel or Netlify for client report publishing</li>
+      <li>Test full workflow across devices</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2>Key Decisions Log</h2>
+    <ul>
+      <li>Google Drive chosen over Notion (not a real filesystem), S3 (no native UI), Dropbox (no advantage)</li>
+      <li>Dedicated Workspace user (ai@youragency.com) chosen over personal Google account — enterprise quotas, scales to 100+ users, no new Workspace subscription needed</li>
+      <li>Railway chosen because already in use; MCP server must be built production-quality from the start (not a prototype) to handle 100+ concurrent users</li>
+      <li>Unguessable link access for client reports — sufficient for weekly analysis use case</li>
+      <li>Managed platforms preferred throughout — no self-managed servers</li>
+      <li>Scale target: 100+ users. Architecture supports this without a rebuild.</li>
+    </ul>
+  </div>
+
+</div>
+
+<footer>
+  <span>Data Infrastructure &amp; Synchronisation — AmzBees</span>
+  <span class="accent">Internal</span>
+</footer>
+
+</body>
+</html>
